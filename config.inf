@@ -1,0 +1,5 @@
+IP=192.168.88.194
+PORT=8899
+USERNAME=your_login
+PASSWORD=your_password
+INVERT_DIRECTION=true
