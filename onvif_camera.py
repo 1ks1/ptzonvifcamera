@@ -4,7 +4,7 @@ from tkinter import ttk
 import sys
 import ast
 
-# load config file
+# Load config file
 def load_config(filename):
     config = {}
     try:
@@ -13,17 +13,17 @@ def load_config(filename):
                 key, value = line.strip().split('=')
                 config[key] = value
     except Exception as e:
-        print(f"Ошибка загрузки конфигурации: {e}")
+        print(f"Configuration loading error: {e}")
     return config
 
-# load settings from config
+# Load settings from config
 config = load_config('config.inf')
 ip = config.get('IP', '192.168.88.199')
 port = int(config.get('PORT', 8899))
 username = config.get('USERNAME', 'admin')
 password = config.get('PASSWORD', 'admin')
 
-# init camera
+# Init camera
 try:
     camera = ONVIFCamera(ip, port, username, password)
     print("Cam is inited")
@@ -38,7 +38,7 @@ except Exception as e:
     print("Error getting PTZ-service:", e)
     sys.exit()
 
-# Mov camera to preset if it exists 
+# Moving camera to preset if it exists 
 def move_preset(presets,profiles,preset):
     if profiles and presets and len(presets) >= preset:
         p = int(preset)
@@ -60,7 +60,7 @@ try:
     print(profiles_count)
     token=profiles[1].token
     presets = ptz_service.GetPresets({'ProfileToken': token})
-    print("Доступные пресеты:")
+    print("Available presets:")
     # print(presets)
     for i, preset in enumerate(presets):
         print(f"{i + 1}. Name: {preset.Name}, Token: {preset.token}")
@@ -69,7 +69,7 @@ except Exception as e:
     sys.exit()    
 
 
-# function for moving to position
+# Function for moving to position
 def go_to_position():
     selected_name = combobox.get()
     for preset in presets:
@@ -78,13 +78,13 @@ def go_to_position():
     print(selected_preset)
     p_name = selected_preset['Name']
     p_token = int(selected_preset['token'])
-    print(f"Установка в позицию : {p_name}")
+    print(f"Mov to position : {p_name}")
     move_preset(presets,profiles,p_token)
 
 
 
 
-# function works with PTZ presets
+# Function works with PTZ presets
 def move_preset_one(event=None):
     move_preset(presets,profiles,1)
 
@@ -94,12 +94,12 @@ def move_preset_two(event=None):
 def move_preset_3(event=None):
     move_preset(presets,profiles,3)
 
-# combobox presets
+# Combobox presets
 def combobox_preset(preset_number):
     move_preset(presets,profiles,preset_number)
 
     
-# functions for PTZ when invers move
+# Functions for PTZ when invers move
 def move_up(event=None):
     ptz_service.ContinuousMove({'ProfileToken': 'Profile_1', 'Velocity': {'PanTilt': {'x': 0, 'y': 0.5}}})
 
@@ -117,7 +117,7 @@ def move_right(event=None):
 def stop_move(event=None):
     ptz_service.Stop({'ProfileToken': 'Profile_1'})
 
-# function for indicate window size 
+# Function for indicate window size 
 def update_window_size(event):
     size_label.config(text=f"{root.winfo_width()}x{root.winfo_height()}")
 
@@ -132,7 +132,7 @@ root.grid_rowconfigure(1, weight=1)
 root.grid_rowconfigure(2, weight=1)
 root.grid_rowconfigure(3, weight=1)
 root.grid_rowconfigure(4, weight=1)
-root.grid_rowconfigure(5, weight=1)  # Новая строка
+root.grid_rowconfigure(5, weight=1)
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
 root.grid_columnconfigure(2, weight=1)
@@ -145,12 +145,12 @@ if presets:
     combobox.current(0)
 
 # Creating button for go to position
-button = tk.Button(root, text="Перейти", height=1, width=8, command=go_to_position)
+button = tk.Button(root, text="Go to", height=1, width=8, command=go_to_position)
 button.grid(row=5, column=2, pady=1)
 
-# checkbox for inversion moving
+# Checkbox for inversion moving
 invert_var = tk.BooleanVar()
-invert_var.set(config.get('INVERT_DIRECTION', 'true').lower() == 'true')  # Установка состояния из конфигурации
+invert_var.set(config.get('INVERT_DIRECTION', 'true').lower() == 'true')  # Setting the state from the configuration
 invert_checkbox = tk.Checkbutton(root, text="R ↔ L", variable=invert_var)
 invert_checkbox.grid(row=3, column=1, pady=5)
 
